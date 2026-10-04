@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NarkoFarm Web</title>
+<style>
+:root{
+  --bg:#08070d;--panel:#11101a;--panel2:#151322;--text:#f5f2ff;--muted:#918ca3;
+  --purple:#b92cff;--pink:#ff39c9;--cyan:#35f5ff;--line:rgba(255,255,255,.09)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}html{background:#08070d;color-scheme:dark}body{margin:0;min-height:100vh;background:#08070d;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 70% 0%,rgba(185,44,255,.15),transparent 35%),radial-gradient(circle at 10% 50%,rgba(255,57,201,.08),transparent 30%);pointer-events:none}
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,black,transparent 90%);pointer-events:none}.glow{position:fixed;border-radius:50%;filter:blur(90px);opacity:.22;pointer-events:none}.glow-a{width:300px;height:300px;background:var(--purple);right:-100px;top:180px}.glow-b{width:240px;height:240px;background:var(--pink);left:-100px;top:900px}
+.topbar{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 5vw;gap:42px;position:sticky;top:0;background:rgba(8,7,13,.82);backdrop-filter:blur(18px);z-index:20}.brand{font-size:25px;font-weight:900;letter-spacing:-1.5px;white-space:nowrap}.brand-narko{color:#fff}.brand-farm{color:#c22cff;text-shadow:0 0 18px rgba(194,44,255,.6)}nav{display:flex;gap:25px;flex:1}nav a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:700}nav a:hover,nav a.active{color:#fff}.telegram-btn,.primary,.ghost{border:0;border-radius:12px;padding:12px 18px;font-weight:800;cursor:pointer}.telegram-btn{background:#fff;color:#09070d}.primary{background:linear-gradient(100deg,#a82cff,#ef3ad0);color:#fff;box-shadow:0 10px 35px rgba(185,44,255,.24)}.ghost{background:rgba(255,255,255,.05);color:#fff;border:1px solid var(--line)}
+main{max-width:1200px;margin:auto;padding:0 24px}.hero{min-height:650px;display:grid;grid-template-columns:1.15fr .85fr;gap:60px;align-items:center;padding:80px 0}.eyebrow,.kicker{font-size:11px;letter-spacing:2px;color:#a8a1b7;font-weight:900}.hero h1{font-size:clamp(54px,7vw,94px);line-height:.92;letter-spacing:-5px;margin:20px 0}.hero h1 span{background:linear-gradient(90deg,#fff,#d52dff,#ff46c9);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{color:var(--muted);font-size:18px;line-height:1.6;max-width:620px}.hero-actions{display:flex;gap:12px;margin:30px 0}.status{font-size:12px;color:#aaa4b7}.status i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#35f5a1;box-shadow:0 0 12px #35f5a1;margin-right:7px}
+.hero-card,.season-card,.table,.city-grid article,.plot{background:linear-gradient(145deg,rgba(24,21,35,.96),rgba(13,12,20,.96));border:1px solid var(--line);box-shadow:0 25px 80px rgba(0,0,0,.35);border-radius:22px}.hero-card{padding:28px}.card-top,.card-foot,.xp-row{display:flex;justify-content:space-between;align-items:center}.card-top,.card-foot,small{color:var(--muted);font-size:11px}.online{color:#5affbd}.player-name{font-size:30px;font-weight:900;margin:35px 0}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stats div{padding:14px;background:rgba(255,255,255,.035);border-radius:14px}.stats small{display:block;margin-bottom:7px}.stats strong{font-size:16px}.progress{height:8px;background:rgba(255,255,255,.07);border-radius:20px;overflow:hidden;margin:22px 0 10px}.progress span{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#a92cff,#ff43d0);box-shadow:0 0 18px rgba(221,45,255,.6)}
+.section{padding:90px 0}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:28px}.section h2{font-size:44px;letter-spacing:-2px;margin:8px 0 0}.pill{font-size:11px;font-weight:900;padding:9px 12px;border-radius:999px;background:rgba(53,245,255,.08);color:var(--cyan);border:1px solid rgba(53,245,255,.18)}.pill.neon{color:#ff6be1;background:rgba(255,57,201,.08);border-color:rgba(255,57,201,.18)}
+.farm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.plot{min-height:170px;padding:20px;display:flex;flex-direction:column;justify-content:space-between}.plot b{font-size:45px}.plot small{font-size:12px}.plot.ready{border-color:rgba(255,57,201,.3);box-shadow:inset 0 0 35px rgba(255,57,201,.06)}.plot.empty{opacity:.6}
+.city-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.city-grid article{padding:25px;min-height:170px}.city-grid article span{font-size:30px}.city-grid h3{font-size:22px;margin:22px 0 8px}.city-grid p{color:var(--muted);line-height:1.5}
+.season-card{overflow:hidden}.season-main{padding:30px;display:flex;gap:35px;align-items:center}.season-level{width:120px;height:120px;border-radius:20px;background:linear-gradient(145deg,#9e27ff,#ff39c9);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 50px rgba(204,43,255,.25)}.season-level strong{font-size:54px;line-height:1}.season-level span{font-size:9px;font-weight:900;letter-spacing:2px}.season-info{flex:1}.progress.big{height:12px}.rewards{border-top:1px solid var(--line);padding:22px 30px;display:flex;align-items:center;justify-content:space-between}.rewards div{display:flex;flex-direction:column;gap:5px}.rewards b{font-size:17px}.rewards span{color:var(--muted);font-size:12px}
+.table{overflow:hidden}.tr{display:grid;grid-template-columns:80px 1fr 180px;padding:18px 22px;border-top:1px solid var(--line);align-items:center}.tr.head{border-top:0;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px}.tr strong{font-size:15px}.tr span:last-child{text-align:right;color:#ddd}
+footer{max-width:1200px;margin:50px auto 0;padding:30px 24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;color:#777284;font-size:11px;letter-spacing:1px}
+@media(max-width:850px){.topbar{gap:15px;padding:0 18px}.topbar nav{display:none}.telegram-btn{margin-left:auto;font-size:12px}.hero{grid-template-columns:1fr;padding:65px 0}.hero h1{letter-spacing:-3px}.farm-grid{grid-template-columns:repeat(2,1fr)}.city-grid{grid-template-columns:1fr}.season-main{align-items:flex-start}.rewards{gap:20px;flex-direction:column;align-items:flex-start}.tr{grid-template-columns:50px 1fr 110px}}
+@media(max-width:480px){main{padding:0 16px}.hero{min-height:auto}.hero-actions{flex-direction:column}.stats{grid-template-columns:1fr}.farm-grid{grid-template-columns:1fr 1fr}.section h2{font-size:36px}.season-main{flex-direction:column}.season-level{width:100%;height:100px}.tr{grid-template-columns:38px 1fr 85px}.telegram-btn{padding:10px 12px}}
+
+/* Mobile polish / robust fallbacks */
+button{font:inherit}
+a{transition:color .2s ease}
+.hero-card,.season-card,.table,.city-grid article,.plot{isolation:isolate}
+@media(max-width:850px){
+  .topbar{height:68px}
+  .brand{font-size:22px}
+  .hero-card{padding:22px}
+  .section{padding:62px 0}
+  .hero p{font-size:16px}
+  .city-grid article{min-height:145px}
+}
+
+.brand-btn{background:none;border:0;color:inherit;cursor:pointer;padding:0}
+.page{display:none}.page.active{display:block;animation:pageIn .22s ease}
+.page-head{padding-bottom:10px}.page-head h2{font-size:clamp(42px,7vw,64px);margin:12px 0 10px}.page-head p{color:var(--muted);font-size:16px}
+.clickable{cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.clickable:hover{transform:translateY(-3px);border-color:rgba(205,50,255,.38);box-shadow:0 20px 55px rgba(185,44,255,.12)}
+button.plot{color:var(--text);text-align:left;width:100%;font:inherit}
+.farm-section{padding-top:10px}
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#171421;border:1px solid rgba(255,57,201,.3);padding:13px 18px;border-radius:13px;box-shadow:0 15px 50px rgba(0,0,0,.45);z-index:50;font-size:13px;transition:.22s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.mobile-nav{display:none}
+@keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:850px){
+  .mobile-nav{position:fixed;display:grid;grid-template-columns:repeat(5,1fr);left:12px;right:12px;bottom:12px;padding:8px;background:rgba(15,13,23,.9);border:1px solid var(--line);border-radius:18px;backdrop-filter:blur(18px);z-index:40;box-shadow:0 12px 40px rgba(0,0,0,.45)}
+  .mobile-nav button{background:none;border:0;color:#8f899d;font-size:18px;padding:5px 2px;cursor:pointer}
+  .mobile-nav button.active{color:#fff}
+  .mobile-nav small{display:block;font-size:9px;margin-top:2px;font-weight:800}
+  footer{padding-bottom:105px}
+}
+@media(min-width:851px){.mobile-nav{display:none!important}}
+
+
+/* v0.5 FARM */
+.farm-wrap{display:grid;grid-template-columns:1.35fr .65fr;gap:22px}
+.farm-panel,.farm-side,.crop-modal{background:linear-gradient(180deg,rgba(20,17,31,.94),rgba(12,10,18,.96));border:1px solid var(--line);border-radius:22px;box-shadow:0 18px 55px rgba(0,0,0,.28)}
+.farm-panel{padding:22px}.farm-side{padding:20px;height:max-content;position:sticky;top:96px}
+.farm-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.farm-toolbar h3{margin:0;font-size:22px}.farm-balance{display:flex;gap:8px;flex-wrap:wrap}
+.resource-pill{padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.035);font-size:13px;font-weight:800}
+.web-beds{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.web-bed{min-height:145px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.025);color:#fff;padding:15px;text-align:left;cursor:pointer;transition:.18s;display:flex;flex-direction:column;justify-content:space-between}
+.web-bed:hover{transform:translateY(-2px);border-color:rgba(194,44,255,.5);box-shadow:0 10px 30px rgba(185,44,255,.12)}
+.web-bed.ready{border-color:rgba(53,245,255,.42);box-shadow:inset 0 0 35px rgba(53,245,255,.06)}
+.web-bed.empty{border-style:dashed}.web-bed.locked{opacity:.45;cursor:default}.web-bed-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);font-weight:800}.web-bed-icon{font-size:38px;margin:10px 0}.web-bed-name{font-weight:900}.web-bed-time{font-size:12px;color:#b9b2c7}.ready .web-bed-time{color:var(--cyan)}
+.farm-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:15px}.farm-actions button{min-height:46px}
+.side-title{font-size:11px;letter-spacing:1.8px;color:#a8a1b7;font-weight:900}.side-head{display:flex;justify-content:space-between;align-items:center;margin:6px 0 16px}.side-head h3{margin:0;font-size:20px}
+.seed-list{display:flex;flex-direction:column;gap:8px}.seed-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.025)}.seed-row.locked{opacity:.45}.seed-icon{font-size:24px}.seed-name{font-size:13px;font-weight:800}.seed-meta{display:block;color:var(--muted);font-size:11px;margin-top:3px}.seed-count{font-weight:900;font-size:13px}
+.farm-note{margin-top:15px;padding:12px;border-radius:14px;background:rgba(185,44,255,.06);border:1px solid rgba(185,44,255,.14);color:#c6bfd0;font-size:12px;line-height:1.45}
+.farm-log{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:14px;color:#c7c0d0;font-size:12px;min-height:44px}
+.crop-modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,calc(100vw - 30px));max-height:80vh;overflow:auto;padding:20px;z-index:60;display:none}
+.crop-modal.show{display:block}.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.68);backdrop-filter:blur(5px);z-index:55;display:none}.modal-backdrop.show{display:block}
+.crop-options{display:grid;gap:8px;margin-top:14px}.crop-option{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;width:100%;text-align:left;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.035);color:#fff;cursor:pointer}.crop-option:disabled{opacity:.35;cursor:not-allowed}.crop-option:hover:not(:disabled){border-color:rgba(194,44,255,.5)}
+.crop-option b{font-size:14px}.crop-option small{display:block;color:var(--muted);margin-top:3px}.crop-option strong{font-size:12px}
+.modal-close{float:right;background:none;border:0;color:#aaa;font-size:24px;cursor:pointer}
+.demo-badge{font-size:10px;color:#ffb9f1;border:1px solid rgba(255,57,201,.25);padding:5px 8px;border-radius:999px}
+@media(max-width:850px){
+ .farm-wrap{grid-template-columns:1fr}.farm-side{position:static}.web-beds{grid-template-columns:repeat(2,1fr)}.farm-actions{grid-template-columns:1fr}
+}
+@media(max-width:420px){.web-bed{min-height:132px;padding:12px}.web-bed-icon{font-size:32px}}
+
+</style>
+
+<style>
+.shop-panel{background:linear-gradient(180deg,rgba(20,17,31,.94),rgba(12,10,18,.96));border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 18px 55px rgba(0,0,0,.28);margin-top:16px}
+.shop-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.shop-card{border:1px solid var(--line);border-radius:16px;padding:14px;background:rgba(255,255,255,.025)}.shop-card.locked{opacity:.45}.shop-card h4{margin:0 0 5px;font-size:14px}.shop-card p{margin:0;color:var(--muted);font-size:11px;line-height:1.45}.shop-card .shop-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:11px}.shop-card button{padding:8px 10px;font-size:11px}.shop-tabs{display:flex;gap:8px;overflow:auto;margin:12px 0}.shop-tab{white-space:nowrap;padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03);color:#fff}.shop-tab.active{border-color:rgba(194,44,255,.7);background:rgba(194,44,255,.12)}.sale-list{display:grid;gap:8px}.sale-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025)}.sale-row small{display:block;color:var(--muted);margin-top:3px}.shop-note{margin-top:12px;padding:11px;border-radius:13px;background:rgba(255,255,255,.025);color:var(--muted);font-size:11px;line-height:1.5}
+@media(max-width:600px){.shop-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="glow glow-a"></div><div class="glow glow-b"></div>
+
+  <header class="topbar">
+    <button class="brand brand-btn" data-page="home"><span class="brand-narko">Narko</span><span class="brand-farm">Farm</span></button>
+    <nav>
+      <a href="#home" data-page="home" class="active">Главная</a>
+      <a href="#farm" data-page="farm">Ферма</a>
+      <a href="#city" data-page="city">Город</a>
+      <a href="#season" data-page="season">Сезон</a>
+      <a href="#rating" data-page="rating">Рейтинг</a>
+    </nav>
+    <button class="telegram-btn" id="loginBtn">Войти через Telegram</button>
+  </header>
+
+  <main id="app">
+    <section class="page active" data-view="home">
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">ONLINE CITY • NARKOFARM WEB</div>
+          <h1>Город никогда<br><span>не спит.</span></h1>
+          <p>Ферма, районы, бизнес, контракты и сезонный прогресс — теперь в одном веб-интерфейсе.</p>
+          <div class="hero-actions">
+            <button class="primary" data-page="farm">Открыть ферму <b>→</b></button>
+            <button class="ghost" data-page="season">Смотреть сезон</button>
+          </div>
+          <div class="status"><i></i> Сервер работает · Неоновые выходные активны</div>
+        </div>
+        <div class="hero-card">
+          <div class="card-top"><span>PLAYER OVERVIEW</span><span class="online">● ONLINE</span></div>
+          <div class="player-name">creep wave</div>
+          <div class="stats">
+            <div><small>💰 Монеты</small><strong>124 500</strong></div>
+            <div><small>🔷 Neon Coins</small><strong>2 340</strong></div>
+            <div><small>⭐ Сезон</small><strong>17 / 50</strong></div>
+          </div>
+          <div class="progress"><span style="width:72%"></span></div>
+          <div class="card-foot"><span>Сезонный XP</span><b>1 740 / 2 000</b></div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="section-head"><div><span class="kicker">QUICK ACCESS</span><h2>Сейчас в городе</h2></div></div>
+        <div class="city-grid">
+          <article class="clickable" data-page="farm"><span>🚬</span><h3>Ферма</h3><p>2 грядки · управление как в Telegram</p></article>
+          <article class="clickable" data-page="city"><span>🏙️</span><h3>Город</h3><p>5 районов · 3 активных контракта</p></article>
+          <article class="clickable" data-page="season"><span>🌃</span><h3>Сезон</h3><p>Уровень 17 · 260 XP до награды</p></article>
+        </div>
+      </section>
+    </section>
+
+    <section class="page" data-view="farm">
+      <section class="section page-head">
+        <span class="kicker">01 / GAME</span>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h2 style="margin-right:4px">Ферма</h2><span class="demo-badge">WEB GAMEPLAY DEMO</span></div>
+        <p>Веб-версия фермы повторяет механику Telegram-бота: те же культуры, таймеры, урожай, комбикорм и катализаторы.</p>
+      </section>
+      <section class="section">
+        <div class="farm-wrap">
+          <div class="farm-panel">
+            <div class="farm-toolbar">
+              <h3>🚬 Участок</h3>
+              <div class="farm-balance">
+                <span class="resource-pill" id="farmCoins">💰 100</span>
+                <span class="resource-pill" id="farmFeed">🧺 0</span>
+                <span class="resource-pill" id="farmCatalysts">⚡ 0</span>
+              </div>
+            </div>
+            <div class="web-beds" id="beds"></div>
+            <div class="farm-actions">
+              <button class="primary" id="plantAllBtn">🌱 Посадить всё</button>
+              <button class="ghost" id="collectAllBtn">📦 Собрать всё</button>
+              <button class="ghost" id="catalystAllBtn">⚡ Ускорить все</button>
+            </div>
+            <div class="farm-log" id="farmLog">Нажми на свободную грядку и выбери культуру. Как в Telegram.</div>
+          </div>
+          <aside class="farm-side">
+            <div class="side-title">INVENTORY</div>
+            <div class="side-head"><h3>🌱 Семена</h3><button class="ghost" id="shopBtn" style="padding:7px 10px;font-size:11px">🛒 Магазин</button></div>
+            <div class="seed-list" id="seedList"></div>
+            <div class="farm-note">
+              <b>Механики бота:</b><br>
+              • 1 семя = 1 грядка<br>
+              • урожай = 6 шт.<br>
+              • комбикорм: +30% урожая<br>
+              • катализатор: −25% оставшегося времени<br>
+              • минимум после ускорения: 1 минута
+            </div>
+          </aside>
+        </div>
+        <div class="shop-panel" id="farmShop" style="display:none">
+          <div class="side-head"><div><div class="side-title">SHOP</div><h3 style="margin:4px 0 0">🛒 Магазин</h3></div><button class="ghost" id="closeShopBtn" style="padding:7px 10px;font-size:11px">Закрыть</button></div>
+          <div class="shop-tabs">
+            <button class="shop-tab active" data-shop-tab="seeds">🌱 Семена</button>
+            <button class="shop-tab" data-shop-tab="beds">🪴 Грядки</button>
+            <button class="shop-tab" data-shop-tab="catalysts">⚡ Катализаторы</button>
+            <button class="shop-tab" data-shop-tab="sell">💰 Продажа</button>
+          </div>
+          <div id="shopContent"></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="page" data-view="city">
+      <section class="section page-head"><span class="kicker">02 / CITY</span><h2>Город</h2><p>Районы, контракты и твоя городская экономика.</p></section>
+      <section class="section">
+        <div class="city-grid">
+          <article class="clickable"><span>🏙️</span><h3>Центр</h3><p>Главный деловой район.</p></article>
+          <article class="clickable"><span>🏭</span><h3>Промзона</h3><p>Контракты и производство.</p></article>
+          <article class="clickable"><span>⚓</span><h3>Порт</h3><p>Заказы и логистика.</p></article>
+          <article class="clickable"><span>🌙</span><h3>Ночной район</h3><p>Активен ночью.</p></article>
+          <article class="clickable"><span>🛣️</span><h3>Окраины</h3><p>Новые возможности.</p></article>
+          <article class="clickable"><span>📜</span><h3>Контракты</h3><p>3 задания доступны.</p></article>
+        </div>
+      </section>
+    </section>
+
+    <section class="page" data-view="season">
+      <section class="section page-head"><span class="kicker">03 / SEASON</span><h2>Неоновый город</h2><p>Сезон 01 · 30 дней · 50 уровней.</p></section>
+      <section class="section">
+        <div class="season-card">
+          <div class="season-main">
+            <div class="season-level"><strong>17</strong><span>УРОВЕНЬ</span></div>
+            <div class="season-info"><div class="xp-row"><span>1 740 / 2 000 XP</span><b>87%</b></div><div class="progress big"><span style="width:87%"></span></div><p>До следующей награды осталось <b>260 XP</b>.</p></div>
+          </div>
+          <div class="rewards"><div><small>СЛЕДУЮЩАЯ НАГРАДА</small><b>🔷 50 Neon Coins</b><span>Уровень 18</span></div><button class="primary" id="seasonReward">Посмотреть награды →</button></div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="section-head"><div><span class="kicker">SEASON TASKS</span><h2>Задания</h2></div></div>
+        <div class="city-grid">
+          <article><span>📜</span><h3>Ночная смена</h3><p>0 / 5 контрактов в Ночном районе</p></article>
+          <article><span>⚓</span><h3>Портовая логистика</h3><p>7 / 10 заказов Порта</p></article>
+          <article><span>💼</span><h3>Предприниматель</h3><p>32 400 / 50 000 прибыли</p></article>
+        </div>
+      </section>
+    </section>
+
+    <section class="page" data-view="rating">
+      <section class="section page-head"><span class="kicker">04 / RANKING</span><h2>Рейтинг</h2><p>Сезонный топ игроков.</p></section>
+      <section class="section">
+        <div class="table">
+          <div class="tr head"><span>#</span><span>Игрок</span><span>Сезонный XP</span></div>
+          <div class="tr"><b>01</b><strong>NightFox</strong><span>48 250</span></div>
+          <div class="tr"><b>02</b><strong>creep wave</strong><span>44 120</span></div>
+          <div class="tr"><b>03</b><strong>NeonCat</strong><span>41 870</span></div>
+          <div class="tr"><b>04</b><strong>Ghost</strong><span>39 540</span></div>
+          <div class="tr"><b>05</b><strong>Raven</strong><span>37 910</span></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+
+  <div class="modal-backdrop" id="modalBackdrop"></div>
+  <div class="crop-modal" id="cropModal">
+    <button class="modal-close" id="modalClose">×</button>
+    <div class="kicker">FARM ACTION</div>
+    <h3 id="modalTitle" style="margin:7px 0 0;font-size:23px">🪴 Выбери семя</h3>
+    <div class="crop-options" id="cropOptions"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <footer><span>© NarkoFarm</span><span>WEB PROTOTYPE · v0.5</span></footer>
+  <div class="mobile-nav">
+    <button data-page="home">⌂<small>Главная</small></button>
+    <button data-page="farm">🚬<small>Ферма</small></button>
+    <button data-page="city">🏙️<small>Город</small></button>
+    <button data-page="season">🌃<small>Сезон</small></button>
+    <button data-page="rating">🏆<small>Рейтинг</small></button>
+  </div>
+
+<script>
+
+const CROPS = {
+  nightleaf:{name:"Найтлиф",emoji:"🌿",seedPrice:20,sell:32,grow:300,yield:6,xp:12,unlock:1},
+  neon_dust:{name:"Неоновая пыль",emoji:"✨",seedPrice:60,sell:90,grow:600,yield:6,xp:30,unlock:10},
+  red_crystal:{name:"Красный кристалл",emoji:"🔴",seedPrice:150,sell:230,grow:1200,yield:6,xp:70,unlock:20},
+  blue_orchid:{name:"Синяя орхидея",emoji:"🪻",seedPrice:400,sell:600,grow:2400,yield:6,xp:150,unlock:35},
+  purple_moss:{name:"Фиолетовый мох",emoji:"🟣",seedPrice:600,sell:950,grow:3300,yield:6,xp:210,unlock:45},
+  neon_ivy:{name:"Неоновый плющ",emoji:"🔵",seedPrice:900,sell:1500,grow:4800,yield:6,xp:300,unlock:55},
+  amber_flower:{name:"Янтарный цветок",emoji:"🟠",seedPrice:1500,sell:2550,grow:7200,yield:6,xp:450,unlock:70},
+  black_rose:{name:"Чёрная роза",emoji:"⚫",seedPrice:2500,sell:4300,grow:10800,yield:6,xp:700,unlock:90},
+  neon_lotus:{name:"Неоновый лотос",emoji:"🌸",seedPrice:0,sell:5200,grow:6000,yield:6,xp:520,unlock:1,premium:true},
+  ghost_flower:{name:"Призрачный цветок",emoji:"👻",seedPrice:0,sell:8200,grow:9000,yield:6,xp:760,unlock:1,premium:true}
+};
+const MAX_BEDS=12, CATALYST_SPEEDUP=.25, CATALYST_MIN=60;
+const STORAGE="narkofarm_web_farm_v06";
+
+function defaultState(){
+  return {
+    level:1,xp:0,coins:100,feed:0,catalysts:0,beds:2,
+    seeds:{nightleaf:6,neon_dust:0,red_crystal:0,blue_orchid:0,purple_moss:0,neon_ivy:0,amber_flower:0,black_rose:0,neon_lotus:0,ghost_flower:0},
+    inventory:{},
+    plots:[{crop:null,plantedAt:null,readyAt:null,feedUsed:false,catalystUsed:0},{crop:null,plantedAt:null,readyAt:null,feedUsed:false,catalystUsed:0}]
+  };
+}
+let state=JSON.parse(localStorage.getItem(STORAGE)||"null")||defaultState();
+let selectedBed=null, plantAllMode=false;
+
+function save(){localStorage.setItem(STORAGE,JSON.stringify(state))}
+function now(){return Math.floor(Date.now()/1000)}
+function unlocked(key){return state.level>=CROPS[key].unlock && !CROPS[key].premium}
+function fmt(sec){sec=Math.max(0,Math.floor(sec));const m=Math.floor(sec/60),s=sec%60;return m?`${m}м ${String(s).padStart(2,"0")}с`:`${s}с`}
+function addXp(gain){
+  let xp=state.xp+Math.max(1,Math.floor(gain)), old=state.level, rewards=[];
+  while(state.level<300 && xp>=100*state.level){xp-=100*state.level;state.level++;if(state.level%4===0){state.feed++;rewards.push(state.level)}}
+  state.xp=xp; return {old,new:state.level,rewards};
+}
+function getReadyQty(p){const c=CROPS[p.crop];return c.yield+(p.feedUsed?Math.round(c.yield*.30):0)}
+function ensurePlots(){while(state.plots.length<state.beds)state.plots.push({crop:null,plantedAt:null,readyAt:null,feedUsed:false,catalystUsed:0})}
+function logFarm(msg){const el=document.getElementById("farmLog");if(el)el.innerHTML=msg}
+function renderFarm(){
+  ensurePlots();
+  document.getElementById("farmCoins").textContent=`💰 ${state.coins.toLocaleString("ru-RU")}`;
+  document.getElementById("farmFeed").textContent=`🧺 ${state.feed}`;
+  document.getElementById("farmCatalysts").textContent=`⚡ ${state.catalysts}`;
+  const beds=document.getElementById("beds");
+  beds.innerHTML="";
+  state.plots.forEach((p,i)=>{
+    const n=i+1, b=document.createElement("button");
+    b.className="web-bed"+(p.crop?(p.readyAt<=now()?" ready":" growing"):" empty");
+    let title=`Грядка ${String(n).padStart(2,"0")}`, icon="＋", name="Свободна", time="Нажми, чтобы посадить";
+    if(p.crop){
+      const c=CROPS[p.crop];icon=c.emoji;name=c.name;
+      time=p.readyAt<=now()?"Готово к сбору":fmt(p.readyAt-now())+(p.feedUsed?" · 🧺":"")+(p.catalystUsed?" · ⚡ "+p.catalystUsed:"");
+    }
+    b.innerHTML=`<span class="web-bed-top"><span>${title}</span><span>${p.crop?"":"EMPTY"}</span></span><b class="web-bed-icon">${icon}</b><span class="web-bed-name">${name}</span><small class="web-bed-time">${time}</small>`;
+    b.onclick=()=>bedClick(i);
+    beds.appendChild(b);
+  });
+  renderSeeds();
+  const ready=state.plots.filter(p=>p.crop&&p.readyAt<=now()).length;
+  const allGrowing=state.plots.length===state.beds&&state.plots.every(p=>p.crop&&p.readyAt>now());
+  document.getElementById("collectAllBtn").textContent=`📦 Собрать всё${ready?` (${ready})`:""}`;
+  document.getElementById("catalystAllBtn").disabled=!(state.plots.length&&allGrowing&&state.catalysts>=state.plots.length);
+  document.getElementById("catalystAllBtn").style.opacity=document.getElementById("catalystAllBtn").disabled?".45":"1";
+}
+function renderSeeds(){
+  const el=document.getElementById("seedList");el.innerHTML="";
+  Object.entries(CROPS).forEach(([key,c])=>{
+    const can=unlocked(key)||c.premium;
+    const row=document.createElement("div");row.className="seed-row"+(can?"":" locked");
+    const count=state.seeds[key]||0;
+    row.innerHTML=`<span class="seed-icon">${c.emoji}</span><div><span class="seed-name">${c.name}</span><span class="seed-meta">${c.premium?"Премиум":`с ${c.unlock} ур. · ${fmt(c.grow)}`}</span></div><strong class="seed-count">${count}</strong>`;
+    el.appendChild(row);
+  });
+}
+function openCropModal(bedIndex,all=false){
+  selectedBed=bedIndex;plantAllMode=all;
+  document.getElementById("modalTitle").textContent=all?"🌱 Посадить всё":"🪴 Выбери семя";
+  const opts=document.getElementById("cropOptions");opts.innerHTML="";
+  Object.entries(CROPS).forEach(([key,c])=>{
+    const count=state.seeds[key]||0, available=(c.premium?false:unlocked(key))&&count>0;
+    const btn=document.createElement("button");btn.className="crop-option";btn.disabled=!available;
+    const action=all?`Посадить ${Math.min(count,state.plots.filter(p=>!p.crop).length)}`:"Посадить";
+    btn.innerHTML=`<span style="font-size:26px">${c.emoji}</span><span><b>${c.name}</b><small>${c.premium?"Премиум-культура":"Рост: "+fmt(c.grow)+" · Урожай: 6"} · ${count} семян</small></span><strong>${available?action:"🔒"}</strong>`;
+    if(available)btn.onclick=()=>plantCrop(key);
+    opts.appendChild(btn);
+  });
+  document.getElementById("modalBackdrop").classList.add("show");
+  document.getElementById("cropModal").classList.add("show");
+}
+function closeCropModal(){document.getElementById("modalBackdrop").classList.remove("show");document.getElementById("cropModal").classList.remove("show");selectedBed=null;plantAllMode=false}
+function plantCrop(key){
+  const c=CROPS[key];
+  if((state.seeds[key]||0)<=0){logFarm("❌ Нет семян этой культуры.");return}
+  if(plantAllMode){
+    const free=state.plots.filter(p=>!p.crop).length, qty=Math.min(free,state.seeds[key]);
+    if(!qty){logFarm("❌ Свободных грядок нет.");return}
+    for(const p of state.plots){if(!p.crop&&state.seeds[key]>0){p.crop=key;p.plantedAt=now();p.readyAt=now()+c.grow;p.feedUsed=false;p.catalystUsed=0;state.seeds[key]--;}}
+    closeCropModal();save();renderFarm();logFarm(`🌱 Посажено: <b>${qty}</b> грядок · ${c.emoji} ${c.name}`);return;
+  }
+  const p=state.plots[selectedBed];
+  if(!p||p.crop){closeCropModal();return}
+  p.crop=key;p.plantedAt=now();p.readyAt=now()+c.grow;p.feedUsed=false;p.catalystUsed=0;state.seeds[key]--;
+  closeCropModal();save();renderFarm();logFarm(`🌱 ${c.name} посажен. Рост: <b>${fmt(c.grow)}</b>.`);
+}
+function bedClick(i){
+  const p=state.plots[i];
+  if(!p||!p.crop){openCropModal(i,false);return}
+  if(p.readyAt<=now()){harvestBed(i);return}
+  const remain=p.readyAt-now();
+  let msg=`${CROPS[p.crop].emoji} <b>${CROPS[p.crop].name}</b> · ⏳ ${fmt(remain)}`;
+  if(!p.feedUsed&&state.feed>0){msg+=`<br><button class="ghost" id="feedInline" style="margin-top:9px">🧺 Насытить урожай (+30%)</button>`}
+  if(state.catalysts>0&&remain>CATALYST_MIN){msg+=`<br><button class="ghost" id="catInline" style="margin-top:9px">⚡ Ускорить (-25%)</button>`}
+  logFarm(msg);
+  setTimeout(()=>{
+    document.getElementById("feedInline")?.addEventListener("click",()=>useFeed(i));
+    document.getElementById("catInline")?.addEventListener("click",()=>useCatalyst(i));
+  },0);
+}
+function harvestBed(i){
+  const p=state.plots[i];if(!p?.crop||p.readyAt>now())return;
+  const c=CROPS[p.crop],qty=getReadyQty(p);state.inventory[p.crop]=(state.inventory[p.crop]||0)+qty;
+  const xp=addXp(c.xp);p.crop=null;p.plantedAt=null;p.readyAt=null;p.feedUsed=false;p.catalystUsed=0;
+  save();renderFarm();
+  logFarm(`📦 <b>Урожай собран!</b><br>${c.emoji} ${c.name} × <b>${qty}</b> · ⭐ +${c.xp} XP${xp.new>xp.old?`<br>🎉 Уровень ${xp.old} → ${xp.new}`:""}`);
+}
+function collectAll(){
+  const ready=state.plots.map((p,i)=>p.crop&&p.readyAt<=now()?i:-1).filter(i=>i>=0);
+  if(!ready.length){logFarm("📦 Собирать пока нечего.");return}
+  let total=0,totalXp=0,lines=[];
+  ready.forEach(i=>{const p=state.plots[i],c=CROPS[p.crop],qty=getReadyQty(p);state.inventory[p.crop]=(state.inventory[p.crop]||0)+qty;total+=qty;totalXp+=c.xp;lines.push(`${c.emoji} ${c.name} × ${qty}`);p.crop=null;p.plantedAt=null;p.readyAt=null;p.feedUsed=false;p.catalystUsed=0});
+  const xp=addXp(totalXp);save();renderFarm();
+  logFarm(`<b>📦 Весь урожай собран!</b><br>${lines.join("<br>")}<br><br>🌾 Всего: <b>${total}</b> · ⭐ XP: <b>+${totalXp}</b>${xp.new>xp.old?`<br>🎉 Уровень ${xp.old} → ${xp.new}`:""}`);
+}
+function useFeed(i){
+  const p=state.plots[i];if(!p?.crop||p.readyAt<=now()||p.feedUsed||state.feed<=0)return;
+  p.feedUsed=true;state.feed--;save();renderFarm();logFarm("🧺 Урожай насыщен на <b>+30%</b>.");}
+function useCatalyst(i){
+  const p=state.plots[i],remain=p?.readyAt? p.readyAt-now():0;
+  if(!p?.crop||remain<=CATALYST_MIN||state.catalysts<=0)return;
+  const reduced=Math.max(1,Math.floor(remain*CATALYST_SPEEDUP)),newRemain=Math.max(CATALYST_MIN,remain-reduced);
+  if(newRemain>=remain)return;
+  p.readyAt=now()+newRemain;p.catalystUsed++;state.catalysts--;save();renderFarm();logFarm(`⚡ Таймер сокращён на <b>25%</b>. Осталось ${fmt(newRemain)}.`);
+}
+function catalystAll(){
+  const beds=state.plots, t=now();
+  if(!beds.length||beds.length!==state.beds||beds.some(p=>!p.crop||p.readyAt<=t)||state.catalysts<beds.length){logFarm("⚡ Ускорить все можно только когда все грядки заняты, растут и хватает катализаторов.");return}
+  beds.forEach(p=>{const remain=p.readyAt-t,reduced=Math.max(1,Math.floor(remain*CATALYST_SPEEDUP));p.readyAt=t+Math.max(CATALYST_MIN,remain-reduced);p.catalystUsed++;});
+  state.catalysts-=beds.length;save();renderFarm();logFarm(`⚡ Все ${beds.length} грядки ускорены на 25%.`);
+}
+function money(n){return Number(n).toLocaleString("ru-RU")}
+function showShop(tab="seeds"){
+  const panel=document.getElementById("farmShop"); if(!panel)return;
+  panel.style.display="block";
+  document.querySelectorAll("[data-shop-tab]").forEach(b=>b.classList.toggle("active",b.dataset.shopTab===tab));
+  const el=document.getElementById("shopContent"); if(!el)return;
+  if(tab==="seeds"){
+    el.innerHTML=`<div class="shop-grid">${Object.entries(CROPS).filter(([k,c])=>!c.premium).map(([key,c])=>{
+      const can=state.level>=c.unlock, count=state.seeds[key]||0;
+      return `<div class="shop-card ${can?"":"locked"}"><h4>${c.emoji} ${c.name}</h4><p>${can?`Открыта с ${c.unlock} ур. · рост ${fmt(c.grow)} · урожай 6 · ${count} семян`: `🔒 Откроется с ${c.unlock} уровня`}</p><div class="shop-row"><b>${money(c.seedPrice)}💰 / шт.</b><button class="primary" ${can?"":"disabled"} data-buy-crop="${key}">Купить</button></div></div>`;
+    }).join("")}</div><div class="shop-note">💡 Как в Telegram: 1 семя — полная цена, 10 — скидка 10%, 100 — скидка 20%.</div>`;
+  } else if(tab==="beds"){
+    const price=state.beds>=MAX_BEDS?null:250*Math.pow(2,Math.max(0,state.beds-3));
+    el.innerHTML=`<div class="shop-card"><h4>🪴 Расширение фермы</h4><p>Сейчас у тебя ${state.beds}/${MAX_BEDS} грядок. Максимум обычной фермы — 12.</p><div class="shop-row"><b>${price===null?"МАКСИМУМ":money(price)+"💰"}</b><button class="primary" id="buyBedWeb" ${price===null?"disabled":""}>Купить грядку</button></div></div><div class="shop-note">Следующая цена растёт в 2 раза после каждой покупки: 250 → 500 → 1 000 → 2 000…</div>`;
+    document.getElementById("buyBedWeb")?.addEventListener("click",buyBedWeb);
+  } else if(tab==="catalysts"){
+    el.innerHTML=`<div class="shop-grid">${[[1,5],[10,40],[100,300]].map(([qty,stars])=>`<div class="shop-card"><h4>⚡ Катализатор ×${qty}</h4><p>Ускоряет оставшееся время роста на 25%. После ускорения остаётся минимум 1 минута.</p><div class="shop-row"><b>${stars}⭐</b><button class="primary" data-catalyst-info="1">Через Telegram</button></div></div>`).join("")}</div><div class="shop-note">⚡ В боте катализаторы покупаются за Telegram Stars. На сайте пока показываем ту же механику, но реальные Stars подключим вместе с Telegram Mini App.</div>`;
+  } else if(tab==="sell"){
+    const items=Object.entries(state.inventory).filter(([k,n])=>n>0&&CROPS[k]);
+    if(!items.length){el.innerHTML=`<div class="shop-card"><h4>💰 Продажа урожая</h4><p>Сейчас у тебя нет собранного урожая.</p></div>`;return;}
+    el.innerHTML=`<div class="sale-list">${items.map(([key,n])=>{const c=CROPS[key];return `<div class="sale-row"><div><b>${c.emoji} ${c.name}</b><small>${n} шт. · ${money(c.sell)}💰 за единицу</small></div><button class="primary" data-sell-crop="${key}">Продать всё · ${money(n*c.sell)}💰</button></div>`}).join("")}</div>`;
+  }
+  el.querySelectorAll("[data-buy-crop]").forEach(b=>b.addEventListener("click",()=>buySeedPack(b.dataset.buyCrop)));
+  el.querySelectorAll("[data-sell-crop]").forEach(b=>b.addEventListener("click",()=>sellCrop(b.dataset.sellCrop)));
+}
+function buySeedPack(key){
+  const c=CROPS[key]; if(!c||c.premium||state.level<c.unlock)return;
+  const choices=[[1,1],[10,.9],[100,.8]];
+  const html=choices.map(([qty,m])=>`<button class="crop-option" data-buy-qty="${qty}"><span>${c.emoji}</span><span><b>${qty} семян</b><small>Скидка ${Math.round((1-m)*100)}%</small></span><strong>${money(Math.floor(c.seedPrice*qty*m))}💰</strong></button>`).join("");
+  document.getElementById("cropOptions").innerHTML=html; document.getElementById("modalTitle").textContent=`🛒 ${c.name}`;
+  selectedBed="shop"; plantAllMode=false; document.getElementById("modalBackdrop").classList.add("show");document.getElementById("cropModal").classList.add("show");
+  document.querySelectorAll("[data-buy-qty]").forEach(b=>b.addEventListener("click",()=>{const qty=Number(b.dataset.buyQty),m=qty===10?.9:qty===100?.8:1,price=Math.floor(c.seedPrice*qty*m);if(state.coins<price){closeCropModal();showShop("seeds");logFarm("❌ Недостаточно монет.");return;}state.coins-=price;state.seeds[key]=(state.seeds[key]||0)+qty;save();closeCropModal();renderFarm();showShop("seeds");logFarm(`🛒 Куплено: ${c.emoji} ${c.name} × <b>${qty}</b> за ${money(price)}💰.`);}));
+}
+function buyBedWeb(){
+  if(state.beds>=MAX_BEDS)return; const price=250*Math.pow(2,Math.max(0,state.beds-3)); if(state.coins<price){logFarm("❌ Недостаточно монет для новой грядки.");return;} state.coins-=price;state.beds++;ensurePlots();save();renderFarm();showShop("beds");logFarm(`🪴 Куплена грядка №<b>${state.beds}</b> за ${money(price)}💰.`);
+}
+function sellCrop(key){const c=CROPS[key],n=state.inventory[key]||0;if(!n)return;const value=n*c.sell;state.inventory[key]=0;state.coins+=value;save();renderFarm();showShop("sell");logFarm(`💰 Продано: ${c.emoji} ${c.name} × <b>${n}</b> за ${money(value)}💰.`)}
+function closeShop(){const panel=document.getElementById("farmShop");if(panel)panel.style.display="none"}
+
+function resetFarm(){
+  localStorage.removeItem(STORAGE);state=defaultState();save();renderFarm();logFarm("🔄 Демо-ферма сброшена.");
+}
+document.getElementById("plantAllBtn").onclick=()=>openCropModal(null,true);
+document.getElementById("collectAllBtn").onclick=collectAll;
+document.getElementById("catalystAllBtn").onclick=catalystAll;
+document.getElementById("resetFarmBtn").onclick=resetFarm;
+document.getElementById("shopBtn").onclick=()=>showShop("seeds");
+document.getElementById("closeShopBtn").onclick=closeShop;
+document.querySelectorAll("[data-shop-tab]").forEach(b=>b.addEventListener("click",()=>showShop(b.dataset.shopTab)));
+
+setInterval(()=>{if(document.querySelector('[data-view="farm"].active'))renderFarm()},1000);
+
+const pages=[...document.querySelectorAll(".page")];
+const navLinks=[...document.querySelectorAll("[data-page]")];
+const toast=document.getElementById("toast");
+function showToast(message){toast.textContent=message;toast.classList.add("show");clearTimeout(window._toastTimer);window._toastTimer=setTimeout(()=>toast.classList.remove("show"),1800)}
+function openPage(name){
+  const target=pages.find(p=>p.dataset.view===name)||pages[0];
+  pages.forEach(p=>p.classList.toggle("active",p===target));
+  navLinks.forEach(el=>el.classList.toggle("active",el.dataset.page===name));
+  history.replaceState(null,"","#"+name);window.scrollTo({top:0,behavior:"smooth"});
+  if(name==="farm")renderFarm();
+}
+navLinks.forEach(el=>el.addEventListener("click",e=>{e.preventDefault();if(el.dataset.page)openPage(el.dataset.page)}));
+document.getElementById("loginBtn").addEventListener("click",()=>showToast("Telegram-авторизация подключим после игровой части."));
+document.getElementById("seasonReward")?.addEventListener("click",()=>showToast("Полноценную сезонную дорожку подключим следующим этапом."));
+document.getElementById("modalBackdrop").addEventListener("click",closeCropModal);
+document.getElementById("modalClose").addEventListener("click",closeCropModal);
+const initial=location.hash.replace("#","");
+openPage(["home","farm","city","season","rating"].includes(initial)?initial:"home");
+save();renderFarm();
+
+</script>
+</body></html>
